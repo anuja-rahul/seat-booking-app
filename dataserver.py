@@ -58,8 +58,8 @@ class DataServer:
     @staticmethod
     def default_user_booking_setup() -> str:
         """
-        Query to initiate the  user_data table
-        :return: user_data table SQL query
+        Query to initiate the  user_bookings table
+        :return: user_bookings table SQL query
         """
 
         return """
@@ -73,8 +73,8 @@ class DataServer:
     @staticmethod
     def default_user_security_setup() -> str:
         """
-        Query to initiate the  user_data table
-        :return: user_data table SQL query
+        Query to initiate the  user_credentials table
+        :return: user_credentials table SQL query
         """
 
         return """
