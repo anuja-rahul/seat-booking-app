@@ -1,3 +1,4 @@
+import uuid
 from abc import ABCMeta, abstractmethod, ABC
 from python_datalogger import DataLogger
 
@@ -26,10 +27,12 @@ class BookingHandler(IBookingHandler, ABC):
         if BookingHandler.__instance is not None:
             raise Exception("Cannot be instantiated more than once")
         else:
+            self.__uid = uuid.uuid4()
             self.__name = name
             self.__password_hash = SecurityHandler(password=password).get_hashed_password()
             self.__row = row
             self.__column = column
+            self.__database = DataServer()
             BookingHandler.__instance = self
 
     @staticmethod
@@ -38,7 +41,23 @@ class BookingHandler(IBookingHandler, ABC):
 
     def book_seat(self):
         if self.__row is not None and self.__column is not None:
-            pass
+            user_data_entry = [f"'{self.__uid}'", f"'{self.__name}'"]
+            self.__database.execute(func=DataServer.create_row_query(
+                table_name='user_data',
+                data_list=user_data_entry
+            ))
+
+            user_booking_entry = [f"'{self.__uid}'", f"'{self.__row}'", f"'{self.__column}'"]
+            self.__database.execute(func=DataServer.create_row_query(
+                table_name='user_bookings',
+                data_list=user_booking_entry
+            ))
+
+            user_creds_entry = [f"'{self.__uid}'", f"'{self.__password_hash}'"]
+            self.__database.execute(func=DataServer.create_row_query(
+                table_name='user_credentials',
+                data_list=user_creds_entry
+            ))
 
     def change_booking(self):
         if self.__row is not None and self.__column is not None:
