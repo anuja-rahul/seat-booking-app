@@ -1,3 +1,4 @@
 from handler import BookingHandler
 
-BookingHandler().test_shit()
+test = BookingHandler(name="TestUser", password="TestPassword", row="A", column="1")
+test.book_seat()
