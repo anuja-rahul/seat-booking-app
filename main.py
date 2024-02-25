@@ -1,4 +1,3 @@
 from handler import BookingHandler
 
-BookingHandler()
-BookingHandler()
+BookingHandler().test_shit()
