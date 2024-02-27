@@ -39,8 +39,21 @@ class BookingHandler(IBookingHandler, ABC):
     def print_data(**kwargs):
         print(BookingHandler.__instance.__name)
 
-    def book_seat(self):
-        if self.__row is not None and self.__column is not None:
+    def __validate_data(self):
+        rows = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+        columns = [num for num in range(1, 11)]
+
+        if self.__row.upper() in rows and int(self.__column) in columns:
+            return True
+        else:
+            return False
+
+    def book_seat(self, row: str = None, column: str = None):
+        if row is not None and column is not None:
+            self.__row = row
+            self.__column = column
+
+        if self.__row is not None and self.__column is not None and self.__validate_data():
             user_data_entry = [f"'{self.__uid}'", f"'{self.__name}'"]
             self.__database.execute(func=DataServer.create_row_query(
                 table_name='user_data',
