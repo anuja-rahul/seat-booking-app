@@ -53,6 +53,30 @@ class BookingHandler(IBookingHandler, ABC):
         else:
             return True
 
+    @DataLogger.logger
+    def __check_credentials(self):
+        if self.__check_existing_user():
+            user_id = self.__database.execute(func=DataServer.read_user_specific_field(
+                table_name='user_data',
+                column='uid',
+                filter_expression=f"name='{self.__name}'"
+            ),
+                output=True
+            )
+
+            user_id = user_id[0][0]
+
+            user_creds = self.__database.execute(func=DataServer.read_user_specific_field(
+                table_name='user_credentials',
+                column='hash',
+                filter_expression=f"uid='{user_id}'"
+            ),
+                output=True
+            )
+
+            creds_hash = user_creds[0][0]
+            return self.__security.check_password_hashes(password_hash=creds_hash)
+
     def __validate_data(self):
         rows = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
         columns = [num for num in range(1, 11)]
@@ -77,30 +101,6 @@ class BookingHandler(IBookingHandler, ABC):
             ))
         else:
             raise Exception("\nUser already exists !\n")
-
-    @DataLogger.logger
-    def __check_credentials(self):
-        if self.__check_existing_user():
-            user_id = self.__database.execute(func=DataServer.read_user_specific_field(
-                table_name='user_data',
-                column='uid',
-                filter_expression=f"name='{self.__name}'"
-            ),
-                output=True
-            )
-
-            user_id = user_id[0][0]
-
-            user_creds = self.__database.execute(func=DataServer.read_user_specific_field(
-                table_name='user_credentials',
-                column='hash',
-                filter_expression=f"uid='{user_id}'"
-            ),
-                output=True
-            )
-
-            creds_hash = user_creds[0][0]
-            return self.__security.check_password_hashes(password_hash=creds_hash)
 
     @DataLogger.logger
     def book_seat(self, row: str = None, column: str = None):
