@@ -13,6 +13,23 @@ class IBookingHandler(metaclass=ABCMeta):
 
 
 class BookingHandler(IBookingHandler, ABC):
+    """
+    Private Methods
+    ---------------
+
+         __check_existing_user
+         __check_credentials
+         __validate_data
+
+    Public Methods
+    --------------
+        print_data
+        add_user
+        book_seat
+        change_booking
+        delete_booking
+
+    """
     __instance = None
 
     @staticmethod
@@ -134,6 +151,5 @@ class BookingHandler(IBookingHandler, ABC):
         else:
             raise Exception(f"\nUser credentials doesn't match !\n")
 
-    @staticmethod
-    def test_shit():
-        DataServer()
+    def __repr__(self):
+        return f"({self.__name}, {self.__uid}, {self.__password_hash})"
