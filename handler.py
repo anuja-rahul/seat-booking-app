@@ -109,25 +109,28 @@ class BookingHandler(IBookingHandler, ABC):
                 self.__row = row
                 self.__column = column
 
-                user_booking_entry = [f"'{self.__uid}'", f"'{self.__row}'", f"'{self.__column}'"]
-                self.__database.execute(func=DataServer.create_row_query(
-                    table_name='user_bookings',
-                    data_list=user_booking_entry
-                ))
+                if self.__validate_data():
+                    user_booking_entry = [f"'{self.__uid}'", f"'{self.__row}'", f"'{self.__column}'"]
+                    self.__database.execute(func=DataServer.create_row_query(
+                        table_name='user_bookings',
+                        data_list=user_booking_entry
+                    ))
         else:
             raise Exception(f"\nUser credentials doesn't match !\n")
 
     def change_booking(self):
         if self.__check_existing_user() and self.__check_credentials():
             if self.__row is not None and self.__column is not None:
-                pass
+                if self.__validate_data():
+                    pass
         else:
             raise Exception(f"\nUser credentials doesn't match !\n")
 
     def delete_booking(self):
         if self.__check_existing_user() and self.__check_credentials():
             if self.__row is not None and self.__column is not None:
-                pass
+                if self.__validate_data():
+                    pass
         else:
             raise Exception(f"\nUser credentials doesn't match !\n")
 
