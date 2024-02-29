@@ -29,6 +29,11 @@ class BookingHandler(IBookingHandler, ABC):
         change_booking
         delete_booking
 
+    Private Attributes
+    ------------------
+
+        __instance
+
     """
     __instance = None
 
