@@ -12,7 +12,7 @@ class SecurityHandler:
         return hashlib.sha256(self.__password.encode()).hexdigest()
 
     @DataLogger.logger
-    def check_password_hashes(self, password_hash: str) -> bool:
+    def check_password_hashes(self, password_hash: str = None) -> bool:
         if self.get_hashed_password() == password_hash:
             return True
         else:
