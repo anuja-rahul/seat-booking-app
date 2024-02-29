@@ -78,7 +78,8 @@ class BookingHandler(IBookingHandler, ABC):
         else:
             raise Exception("\nUser already exists !\n")
 
-    def check_credentials(self):
+    @DataLogger.logger
+    def __check_credentials(self):
         if self.__check_existing_user():
             user_id = self.__database.execute(func=DataServer.read_user_specific_field(
                 table_name='user_data',
@@ -101,25 +102,34 @@ class BookingHandler(IBookingHandler, ABC):
             creds_hash = user_creds[0][0]
             return self.__security.check_password_hashes(password_hash=creds_hash)
 
-
+    @DataLogger.logger
     def book_seat(self, row: str = None, column: str = None):
-        if row is not None and column is not None:
-            self.__row = row
-            self.__column = column
+        if self.__check_existing_user() and self.__check_credentials():
+            if row is not None and column is not None:
+                self.__row = row
+                self.__column = column
 
-            user_booking_entry = [f"'{self.__uid}'", f"'{self.__row}'", f"'{self.__column}'"]
-            self.__database.execute(func=DataServer.create_row_query(
-                table_name='user_bookings',
-                data_list=user_booking_entry
-            ))
+                user_booking_entry = [f"'{self.__uid}'", f"'{self.__row}'", f"'{self.__column}'"]
+                self.__database.execute(func=DataServer.create_row_query(
+                    table_name='user_bookings',
+                    data_list=user_booking_entry
+                ))
+        else:
+            raise Exception(f"\nUser credentials doesn't match !\n")
 
     def change_booking(self):
-        if self.__row is not None and self.__column is not None:
-            pass
+        if self.__check_existing_user() and self.__check_credentials():
+            if self.__row is not None and self.__column is not None:
+                pass
+        else:
+            raise Exception(f"\nUser credentials doesn't match !\n")
 
     def delete_booking(self):
-        if self.__row is not None and self.__column is not None:
-            pass
+        if self.__check_existing_user() and self.__check_credentials():
+            if self.__row is not None and self.__column is not None:
+                pass
+        else:
+            raise Exception(f"\nUser credentials doesn't match !\n")
 
     @staticmethod
     def test_shit():
